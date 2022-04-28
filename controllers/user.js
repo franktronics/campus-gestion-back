@@ -35,6 +35,7 @@ exports.login = (req, res, next) => {
 }
 
 exports.signin = (req, res, next) => {
+    console.log(req.body)
     User.findOne({ matricule: req.body.matricule })
         .then(user => {
             if(!user){
