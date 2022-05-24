@@ -33,10 +33,10 @@ exports.login = (req, res, next) => {
 }
 
 exports.signin = (req, res, next) => {
-    console.log(req.body)
+    /*console.log(req.body)
     if(req.file){
         console.log('file present', req.file)
-    }
+    }*/
     User.findOne({ matricule: req.body.matricule })
         .then(user => {
             if(!user){

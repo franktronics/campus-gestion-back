@@ -5,7 +5,7 @@ const router = express.Router()
 const multerConfigProfil = require('../middleware/multer-config-profil')
 //////
 
-router.post('/signin', multerConfigProfil, userCtrl.signin)
+router.post('/signin', userCtrl.signin)
 router.post('/verif', userCtrl.verif)
 router.post('/login', userCtrl.login)
 
