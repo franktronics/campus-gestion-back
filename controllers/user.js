@@ -79,7 +79,10 @@ exports.verif = (req, res, next) => {
                                         matricule: req.body.matricule
                                     })
                                 })
-                                .catch(error => {res.status(200).json({messageError: error})})    
+                                .catch(error => {
+                                    console.log('mail error', error)
+                                    res.status(200).json({messageError: error})
+                                })    
                         }else{
                             res.status(200).json({messageError: "Le matricule que vous avez entré n'existe pas"})
                         }
