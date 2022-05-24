@@ -71,7 +71,7 @@ exports.verif = (req, res, next) => {
                 listet.findOne({matricule: req.body.matricule})
                     .then((et) => {
                         if(et){
-                            sendMail(et.email, `votre code est ${code}`)
+                            sendMail(et.email, `votre code de confirmation est ${code}`)
                                 .then(mail => {
                                     res.status(200).json({
                                         email: et.email,
@@ -82,7 +82,7 @@ exports.verif = (req, res, next) => {
                                 .catch(error => {
 
                                     console.log('mail error', error)
-                                    
+
                                     res.status(200).json({messageError: error})
                                 })    
                         }else{
