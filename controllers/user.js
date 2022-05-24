@@ -6,8 +6,6 @@ const listet = require('../models/listet')
 const { numberGenerator } = require('../script/numberGenerator')
 const { sendMail } = require('../script/sendMail')
 
-const TOKENKEY = process.env.DB_TOKEN
-
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then(user => {
@@ -36,12 +34,14 @@ exports.login = (req, res, next) => {
 
 exports.signin = (req, res, next) => {
     console.log(req.body)
+    if(req.file){
+        console.log('file present', req.file)
+    }
     User.findOne({ matricule: req.body.matricule })
         .then(user => {
             if(!user){
                 bcrypt.hash(req.body.password, 10)
                     .then(hash => {
-                        console.log(req.body)
                         const newUser = new User({
                             ...req.body,
                             password: hash,
@@ -50,8 +50,7 @@ exports.signin = (req, res, next) => {
                         })
                         newUser.save()
                             .then(() => {res.status(200).json({message: "Utilisateur crée !"})})
-                            .catch(error => { 
-                                console.log(error)
+                            .catch(error => {
                                 res.status(500).json( error )})
                     })
                     .catch(error => {
@@ -72,7 +71,7 @@ exports.verif = (req, res, next) => {
                 listet.findOne({matricule: req.body.matricule})
                     .then((et) => {
                         if(et){
-                            sendMail(et.email, code)
+                            sendMail(et.email, `votre code est ${code}`)
                                 .then(mail => {
                                     res.status(200).json({
                                         email: et.email,
