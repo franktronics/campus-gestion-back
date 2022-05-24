@@ -28,7 +28,7 @@ exports.sendMail = (email, code) => {
     }
 
     return new Promise((resolve, reject) => {
-        /*transporter.sendMail(mailOptions, function(error, info){
+        transporter.sendMail(mailOptions, function(error, info){
             if (error) {
                 console.log(error);
                 reject('Probleme lors de l\'envoi du mail')
@@ -36,7 +36,7 @@ exports.sendMail = (email, code) => {
                 console.log('Email sent: ' + info.response);
                 resolve('Email sent: ' + info.response)
             }
-        })*/
+        })
         resolve('mail sended')
     })
 }
