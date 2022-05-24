@@ -80,7 +80,9 @@ exports.verif = (req, res, next) => {
                                     })
                                 })
                                 .catch(error => {
+
                                     console.log('mail error', error)
+                                    
                                     res.status(200).json({messageError: error})
                                 })    
                         }else{
