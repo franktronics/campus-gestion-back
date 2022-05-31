@@ -42,10 +42,11 @@ exports.signin = (req, res, next) => {
             if(!user){
                 bcrypt.hash(req.body.password, 10)
                     .then(hash => {
+			const date = Date.now()
                         const newUser = new User({
                             ...req.body,
                             password: hash,
-                            date: Date.now(),
+                            date: date,
                             imgProfil: ''
                         })
                         newUser.save()
@@ -71,7 +72,7 @@ exports.verif = (req, res, next) => {
                 listet.findOne({matricule: req.body.matricule})
                     .then((et) => {
                         if(et){
-                            sendMail(et.email, `votre code de confirmation est ${code}`)
+                            sendMail(et.email, `Campus gestion: votre code de confirmation est ${code}`)
                                 .then(mail => {
                                     res.status(200).json({
                                         email: et.email,
