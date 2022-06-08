@@ -1,8 +1,12 @@
 
 exports.numberGenerator = (n) => {
-    let s = ""
+    let s = []
     for(let i = 0; i < n; i++){
-        s = s + parseInt(Math.random() * 10).toString()
+        s.push(i)
     }
-    return parseInt(s)
+    for(let i = 0; i < n; i++){
+        const nbre = parseInt(Math.random() * 10)
+        s[i] = nbre
+    }
+    return s.join('')
 }

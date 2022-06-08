@@ -6,6 +6,8 @@ const listet = require('../models/listet')
 const { numberGenerator } = require('../script/numberGenerator')
 const { sendMail } = require('../script/sendMail')
 
+const TOKENKEY = process.env.DB_TOKEN
+
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then(user => {
@@ -29,12 +31,12 @@ exports.login = (req, res, next) => {
                 })
                 .catch( error => {res.status(500).json({ error })})
         })
-        .catch( error => {res.status(500).json({ error })})
+        .catch( error => {res.status(501).json({ error })
+        })
 }
 
 exports.signin = (req, res, next) => {
-    /*console.log(req.body)
-    if(req.file){
+    /*if(req.file){
         console.log('file present', req.file)
     }*/
     User.findOne({ matricule: req.body.matricule })
