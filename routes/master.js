@@ -6,5 +6,7 @@ const router = express.Router()
 
 router.post('/login', masterCtrl.login)
 router.get('/getdata', authMaster, masterCtrl.getData)
+router.post('/addfac', authMaster, masterCtrl.addFac)
+router.post('/addfil', authMaster, masterCtrl.addFil)
 
 module.exports = router
