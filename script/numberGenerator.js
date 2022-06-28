@@ -5,7 +5,7 @@ exports.numberGenerator = (n) => {
         s.push(i)
     }
     for(let i = 0; i < n; i++){
-        const nbre = parseInt(Math.random() * 10)
+        const nbre = 0//parseInt(Math.random() * 10)
         s[i] = nbre
     }
     return s.join('')
