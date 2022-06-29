@@ -5,6 +5,7 @@ const User = require('../models/user')
 const listet = require('../models/listet')
 const { numberGenerator } = require('../script/numberGenerator')
 const { sendMail } = require('../script/sendMail')
+const Master = require('../models/master')
 
 const TOKENKEY = process.env.DB_TOKEN
 
@@ -96,4 +97,27 @@ exports.verif = (req, res, next) => {
             }
         })
         .catch( error => {res.status(500).json({error})})
+}
+
+exports.getFac = (req, res, next) => {
+    Master.find()
+        .then(mas => {
+            const fac = mas[0].fac.map((f) => {
+                return {
+                    title: f.title,
+                    id: f.id
+                }
+            })
+            const fil = mas[0].fil.map((f) => {
+                return {
+                    title: f.title,
+                    facId: f.facId,
+                    id: f.id
+                }
+            })
+            res.status(200).json({fac, fil})
+        })
+        .catch(err => {
+            res.status(400).json(err)
+        })
 }
