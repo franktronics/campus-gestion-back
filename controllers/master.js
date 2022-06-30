@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config({path: '.env'})
 const Master = require('../models/master')
+const Ens = require('../models/enseignant')
 
 const TOKENKEY = process.env.DB_TOKEN
 
@@ -87,4 +88,54 @@ exports.addFil = (req, res, next) => {
         .catch( error => {
             console.log(error)
             res.status(500).json({ error })})
+}
+
+exports.addEns = (req, res, next) => {
+    Ens.findOne({ identifier: req.body.identifier })
+    .then(user => {
+        if(!user){
+            bcrypt.hash(req.body.password, 10)
+                .then(hash => {
+                    const date = Date.now()
+                    const ens = {
+                        ...req.body,
+                        password: hash,
+                        date: date
+                    }
+                    const newUser = new Ens(ens)
+                    newUser.save()
+                        .then(() => {res.status(200).json({
+                            message: "Enseignant ajouté !",
+                            ens: ens
+                        })})
+                        .catch(error => {res.status(500).json( error )})
+                })
+                .catch(error => {
+                    res.status(500).json( error )
+                })
+        }else{
+            res.status(200).json({messageError: "Cet identifiant est deja utilisé"})
+        }
+    })
+    .catch( error => {res.status(500).json({ error })})
+}
+
+exports.getEns = (req, res, next) => {
+    Ens.find()
+    .then(r => {
+        let R = [...r]
+        R.forEach((el, k) => {
+            R[k].id = undefined
+            R[k]._id = undefined
+            R[k].__v = undefined
+        })
+        res.status(200).json({ens: R})
+    })
+    .catch(error => {res.status(500).json({ error })})
+}
+
+exports.deleteEns = (req, res, next) => {
+    Ens.deleteOne({identifier: req.body.identifier})
+    .then(() => {res.status(200).json({ message: 'Enseignant supprimé!' })})
+    .catch(( error ) => {res.status(400).json( error )})
 }
