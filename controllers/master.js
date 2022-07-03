@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config({path: '.env'})
 const Master = require('../models/master')
 const Ens = require('../models/enseignant')
+const Mat = require('../models/matiere')
 
 const TOKENKEY = process.env.DB_TOKEN
 
@@ -138,4 +139,67 @@ exports.deleteEns = (req, res, next) => {
     Ens.deleteOne({identifier: req.body.identifier})
     .then(() => {res.status(200).json({ message: 'Enseignant supprimé!' })})
     .catch(( error ) => {res.status(400).json( error )})
+}
+
+exports.addMat = (req, res, next) => {
+    Mat.findOne({ intitled: req.body.intitled })
+    .then(user => {
+        console.log(user)
+        if(!user || !(user.intitled === req.body.intitled && user.fil === req.body.fil && user.niv === req.body.niv)){
+                const date = Date.now()
+                const mat = {
+                    ...req.body,
+                    code: req.body.code.toUpperCase(),
+                    intitled: req.body.intitled.toUpperCase(),
+                    date: date
+                }
+                const newUser = new Mat(mat)
+                newUser.save()
+                    .then(() => {res.status(200).json({
+                        message: "Matiere ajoutée !",
+                        mat: mat
+                    })})
+                    .catch(error => {res.status(500).json( error )})
+        }else{
+            res.status(200).json({messageError: "Cette matiere existe deja au meme emplacement"})
+        }
+    })
+    .catch( error => {
+        console.log(error)
+        res.status(500).json({ error })})
+}
+
+exports.getMat = (req, res, next) => {
+    Mat.find()
+    .then(r => {
+        let R = [...r]
+        R.forEach((el, k) => {
+            R[k].id = undefined
+            R[k]._id = undefined
+            R[k].__v = undefined
+        })
+        res.status(200).json({mat: R})
+    })
+    .catch(error => {res.status(500).json({ error })})
+}
+
+exports.deleteMat = (req, res, next) => {
+    Mat.find()
+    .then((d) => {
+        let id = 0
+        d.forEach((el) => {
+            if(el.intitled.toUpperCase() === req.body.intitled.toUpperCase() && el.fil === req.body.fil && el.niv === req.body.niv){
+                id = el.id
+                return
+            }
+        })
+        console.log('delete Mat ', req.body.intitled, " ",id)
+        if(id !== 0){
+            Mat.deleteOne({id: id})
+            .then((f) => {res.status(200).json({ message: 'Matiere supprimé!' })})
+            .catch(( error ) => {res.status(400).json( error )})
+        }
+    })
+    .catch(( error ) => {res.status(400).json( error )})
+    
 }
