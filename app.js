@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user')
 const masterRoutes = require('./routes/master')
+const scheduleRoutes = require('./routes/schedule')
 require('dotenv').config({path: '.env'})
 
 const CONNECT = process.env.DB_CONNECT
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 
 app.use('/user', userRoutes)
 app.use('/master', masterRoutes)
+app.use('/schedule', scheduleRoutes)
 app.get('/', (req, res) => { res.json({msg: 'Hello server!'})})
 
 

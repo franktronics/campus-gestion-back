@@ -4,6 +4,7 @@ require('dotenv').config({path: '.env'})
 const Master = require('../models/master')
 const Ens = require('../models/enseignant')
 const Mat = require('../models/matiere')
+const Room = require('../models/classe')
 
 const TOKENKEY = process.env.DB_TOKEN
 
@@ -96,24 +97,25 @@ exports.addEns = (req, res, next) => {
     .then(user => {
         if(!user){
             bcrypt.hash(req.body.password, 10)
-                .then(hash => {
-                    const date = Date.now()
-                    const ens = {
-                        ...req.body,
-                        password: hash,
-                        date: date
-                    }
-                    const newUser = new Ens(ens)
-                    newUser.save()
-                        .then(() => {res.status(200).json({
-                            message: "Enseignant ajouté !",
-                            ens: ens
-                        })})
-                        .catch(error => {res.status(500).json( error )})
-                })
-                .catch(error => {
-                    res.status(500).json( error )
-                })
+            .then(hash => {
+                const date = Date.now()
+                const ens = {
+                    ...req.body,
+                    password: hash,
+                    grade: req.body.grade.toUpperCase(),
+                    date: date
+                }
+                const newUser = new Ens(ens)
+                newUser.save()
+                .then(() => {res.status(200).json({
+                    message: "Enseignant ajouté !",
+                    ens: ens
+                })})
+                .catch(error => {res.status(500).json( error )})
+            })
+            .catch(error => {
+                res.status(500).json( error )
+            })
         }else{
             res.status(200).json({messageError: "Cet identifiant est deja utilisé"})
         }
@@ -142,7 +144,7 @@ exports.deleteEns = (req, res, next) => {
 }
 
 exports.addMat = (req, res, next) => {
-    Mat.findOne({ intitled: req.body.intitled })
+    Mat.findOne({ code: req.body.code })
     .then(user => {
         console.log(user)
         if(!user || !(user.intitled === req.body.intitled && user.fil === req.body.fil && user.niv === req.body.niv)){
@@ -202,4 +204,52 @@ exports.deleteMat = (req, res, next) => {
     })
     .catch(( error ) => {res.status(400).json( error )})
     
+}
+
+exports.addRoom = (req, res, next) => {
+    Room.findOne({ room: req.body.room })
+    .then(user => {
+        if(!user){
+            const date = Date.now()
+            const room = {
+                ...req.body,
+                room: req.body.room.split(' ').join('-').toUpperCase(),
+                description: req.body.description === ''? 'Aucune description': req.body.description,
+                date: date
+            }
+            const newRoom = new Room(room)
+            newRoom.save()
+                .then(() => {res.status(200).json({
+                    message: "Classe ajoutée !",
+                    room: room
+                })})
+                .catch(error => {res.status(500).json( error )})
+        }else{
+            res.status(200).json({messageError: "Cette classe existe deja"})
+        }
+    })
+    .catch( error => {
+        console.log(error)
+        res.status(500).json({ error })
+    })
+}
+
+exports.getRoom = (req, res, next) => {
+    Room.find()
+    .then(r => {
+        let R = [...r]
+        R.forEach((el, k) => {
+            R[k].id = undefined
+            R[k]._id = undefined
+            R[k].__v = undefined
+        })
+        res.status(200).json({room: R})
+    })
+    .catch(error => {res.status(500).json({ error })})
+}
+
+exports.deleteRoom = (req, res, next) => {
+    Room.deleteOne({room: req.body.room})
+    .then(() => {res.status(200).json({ message: 'Classe supprimé!' })})
+    .catch(( error ) => {res.status(400).json( error )})
 }

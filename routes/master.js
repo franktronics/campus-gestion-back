@@ -17,4 +17,9 @@ router.post('/addmat', authMaster, masterCtrl.addMat)
 router.get('/getmat', authMaster, masterCtrl.getMat)
 router.post('/deletemat', authMaster, masterCtrl.deleteMat)
 
+router.post('/addroom', authMaster, masterCtrl.addRoom)
+router.get('/getroom', authMaster, masterCtrl.getRoom)
+router.post('/deleteroom', authMaster, masterCtrl.deleteRoom)
+
+
 module.exports = router

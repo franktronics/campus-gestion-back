@@ -7,6 +7,7 @@ const matiere = new Schema({
     niv: {type: String, required: true},
     intitled: {type: String, required: true},
     code: {type: String, required: true},
+    date: {type: Number, required: true}
 })
 
 module.exports = mongoose.model('matiere', matiere)
